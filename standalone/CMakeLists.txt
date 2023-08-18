@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.14...3.22)
 
 project(GreeterStandalone LANGUAGES CXX)
 
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+
 # --- Import tools ----
 
 include(../cmake/tools.cmake)
@@ -24,6 +27,9 @@ file(GLOB sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp)
 
 add_executable(${PROJECT_NAME} ${sources})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "Greeter")
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "FrameProcessor")
 
-target_link_libraries(${PROJECT_NAME} Greeter::Greeter cxxopts)
+target_link_libraries(${PROJECT_NAME} FrameProcessor::FrameProcessor cxxopts)
+
+target_link_libraries(${PROJECT_NAME}  ${OpenCV_LIBS} )
+
