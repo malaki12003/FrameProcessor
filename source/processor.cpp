@@ -18,7 +18,7 @@ std::vector<FrameInfo> FrameProcessor::averageRGB() const {
   std::vector<FrameInfo> frameInfoList;
 
   cv::Mat frame;
-  int frameNumber = 0;
+  int frameNumber = 1;
   while (cap.read(frame)) {
     cv::Scalar averageColor = cv::mean(frame);
     FrameInfo frameInfo;
