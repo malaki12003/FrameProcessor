@@ -18,7 +18,7 @@ namespace processor {
 
   public:
     /**
-     * @brief Creates a new greeter
+     * @brief Creates a new frameprocessor
      * @param name the name to greet
      */
     FrameProcessor(std::string videoPath);
