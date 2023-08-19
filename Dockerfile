@@ -4,14 +4,15 @@ FROM ubuntu:20.04
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
 
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install required packages
 RUN apt-get update && \
-    apt-get install -y git cmake g++ libopencv-dev libjsoncpp-dev librabbitmq-dev
+    apt-get install -y git cmake g++ libopencv-dev libboost-all-dev  librabbitmq-dev doxygen
+
+# Copy the current directory contents into the container at /app
+COPY . /app
 
 # Compile the FrameProcessor application
 RUN cmake -S standalone -B build/standalone && \
@@ -19,9 +20,9 @@ RUN cmake -S standalone -B build/standalone && \
 
 
 
-# Define environment variables
-ENV RMQ_URI ""
-ENV EXCHANGE_NAME ""
 
 # Run the FrameProcessor application
-CMD ["./build/standalone/Greeter", "--help"]
+
+# CMD ["./build/standalone/FrameProcessor","--video", "./data/video.mp4","--rmq","amqp://guest:guest@host.docker.internal:5672/amq.direct"]
+CMD ["./build/standalone/FrameProcessor","--video", "./data/video.mp4"]
+# ENTRYPOINT ["tail", "-f", "/dev/null"]

@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.14...3.22)
 
-project(GreeterStandalone LANGUAGES CXX)
+project(FrameProcessorStandalone LANGUAGES CXX)
+
+find_package(OpenCV REQUIRED)
+find_package(PkgConfig REQUIRED)
+pkg_search_module(RABBITMQ REQUIRED librabbitmq)
+
+include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${RABBITMQ_INCLUDE_DIRS})
 
 # --- Import tools ----
 
@@ -16,7 +23,7 @@ CPMAddPackage(
   OPTIONS "CXXOPTS_BUILD_EXAMPLES NO" "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_ENABLE_INSTALL YES"
 )
 
-CPMAddPackage(NAME Greeter SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
+CPMAddPackage(NAME FrameProcessor SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 
 # ---- Create standalone executable ----
 
@@ -24,6 +31,8 @@ file(GLOB sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp)
 
 add_executable(${PROJECT_NAME} ${sources})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "Greeter")
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "FrameProcessor")
 
-target_link_libraries(${PROJECT_NAME} Greeter::Greeter cxxopts)
+target_link_libraries(${PROJECT_NAME} FrameProcessor::FrameProcessor cxxopts)
+
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} ${RABBITMQ_LIBRARIES})
