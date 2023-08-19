@@ -1,0 +1,24 @@
+name: Build Docker Container
+
+on:
+  push:
+    branches:
+      - main
+      - docker
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build -t frame-processor .
+
+    - name: Publish Docker image
+      run: |
+        echo ${{ secrets.DOCKERHUB_PASSWORD }} | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+        docker tag frame-processor ${{ secrets.DOCKERHUB_USERNAME }}/frame-processor:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/frame-processor:latest
