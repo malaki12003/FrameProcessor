@@ -1,13 +1,14 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace processor {
 
-    struct FrameInfo {
-        int frame;
-        int rgb[3];
-    };
+  struct FrameInfo {
+    int frame;
+    int rgb[3];
+  };
 
   /**
    * @brief A class for proccessing video files
@@ -27,8 +28,8 @@ namespace processor {
      * @param lang the language to greet in
      * @return a string containing the greeting
      */
-    std::vector<FrameInfo>  averageRGB() const;
+    std::vector<FrameInfo> averageRGB() const;
     std::string frameInfoListToJsonL(const std::vector<FrameInfo>& frameInfoList) const;
   };
 
-}  // namespace greeter
+}  // namespace processor

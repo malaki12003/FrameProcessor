@@ -2,14 +2,12 @@ cmake_minimum_required(VERSION 3.14...3.22)
 
 project(GreeterStandalone LANGUAGES CXX)
 
-find_package( OpenCV REQUIRED )
-find_package(jsoncpp REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(RABBITMQ REQUIRED librabbitmq)
 
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-include_directories(${JSONCPP_INCLUDE_DIRS})
-include_directories(${SIMPLEAMQPCLIENT_INCLUDE_DIRS})
+include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${RABBITMQ_INCLUDE_DIRS})
 
 # --- Import tools ----
 
@@ -37,7 +35,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17 OUTPUT_NAME "Fr
 
 target_link_libraries(${PROJECT_NAME} FrameProcessor::FrameProcessor cxxopts)
 
-target_link_libraries(${PROJECT_NAME}  ${OpenCV_LIBS} )
-
-
-target_link_libraries(${PROJECT_NAME}   JsonCpp::JsonCpp)
+target_link_libraries(${PROJECT_NAME} ${OpenCV_LIBS} ${RABBITMQ_LIBRARIES})
