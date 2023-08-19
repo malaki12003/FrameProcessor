@@ -51,7 +51,7 @@ auto main(int argc, char** argv) -> int {
 
   processor::FrameProcessor processor(name);
   std::vector<processor::FrameInfo> frameInfoList = processor.averageRGB();
-
+  std::string jsonlOutput = processor.frameInfoListToJsonL(frameInfoList);
   if (rmqUri.length() > 0) {
     RmqUriInfo rmqInfo;
 
@@ -77,9 +77,8 @@ auto main(int argc, char** argv) -> int {
       std::cerr << "Error opening socket" << std::endl;
       return 1;
     }
-    amqp_rpc_reply_t reply
-        = amqp_login(conn, rmqInfo.host.c_str(), 0, 131072, 0, AMQP_SASL_METHOD_PLAIN,
-                     rmqInfo.username.c_str(), rmqInfo.password.c_str());
+    amqp_rpc_reply_t reply = amqp_login(conn, "/", 0, 131072, 0, AMQP_SASL_METHOD_PLAIN,
+                                        rmqInfo.username.c_str(), rmqInfo.password.c_str());
     if (reply.reply_type != AMQP_RESPONSE_NORMAL) {
       std::cerr << "Login failed." << std::endl;
       return 1;
@@ -88,24 +87,16 @@ auto main(int argc, char** argv) -> int {
     amqp_channel_open(conn, 1);
     amqp_get_rpc_reply(conn);
 
-    for (const processor::FrameInfo& frameInfo : frameInfoList) {
-      std::string jsonLine = "{\"frame\": " + std::to_string(frameInfo.frame) + ", \"rgb\": ["
-                             + std::to_string(frameInfo.rgb[0]) + ", "
-                             + std::to_string(frameInfo.rgb[1]) + ", "
-                             + std::to_string(frameInfo.rgb[2]) + "]}";
-
-      // Publish JSON message to RabbitMQ
-      amqp_bytes_t message_bytes = amqp_cstring_bytes(jsonLine.c_str());
-      amqp_basic_publish(conn, 1, amqp_cstring_bytes(rmqInfo.exchangeName.c_str()),
-                         amqp_cstring_bytes("routingKey"), 0, 0, nullptr, message_bytes);
-    }
+    // Publish JSON message to RabbitMQ
+    amqp_bytes_t message_bytes = amqp_cstring_bytes(jsonlOutput.c_str());
+    amqp_basic_publish(conn, 1, amqp_cstring_bytes(rmqInfo.exchangeName.c_str()),
+                       amqp_cstring_bytes(""), 0, 0, nullptr, message_bytes);
 
     amqp_channel_close(conn, 1, AMQP_REPLY_SUCCESS);
     amqp_connection_close(conn, AMQP_REPLY_SUCCESS);
     amqp_destroy_connection(conn);
 
   } else {
-    std::string jsonlOutput = processor.frameInfoListToJsonL(frameInfoList);
     std::cout << jsonlOutput;
   }
 

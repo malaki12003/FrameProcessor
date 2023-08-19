@@ -22,4 +22,7 @@ RUN cmake -S standalone -B build/standalone && \
 
 
 # Run the FrameProcessor application
-CMD ["./build/standalone/FrameProcessor","--video", "./data/video.mp4","--rmq","amqp://guest:guest@host.docker.internal:5672/amq.direct"]
+
+# CMD ["./build/standalone/FrameProcessor","--video", "./data/video.mp4","--rmq","amqp://guest:guest@host.docker.internal:5672/amq.direct"]
+CMD ["./build/standalone/FrameProcessor","--video", "./data/video.mp4"]
+# ENTRYPOINT ["tail", "-f", "/dev/null"]

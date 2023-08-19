@@ -1,0 +1,24 @@
+version: '3'
+services:
+  frame-processor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./build/standalone/FrameProcessor --video ./data/video.mp4 --rmq amqp://guest:guest@rabbitmq:5672/frame-exchange
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  rabbitmq:
+    image: "rabbitmq:management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./rabbitmq-config/:/etc/rabbitmq/
+
