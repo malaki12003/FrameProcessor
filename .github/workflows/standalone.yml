@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Install deps
-        run: apt-get install -y git cmake g++ libopencv-dev libboost-all-dev  librabbitmq-dev doxygen
+        run: sudo apt-get install -y git cmake g++ libopencv-dev libboost-all-dev  librabbitmq-dev doxygen
       - uses: actions/checkout@v3
 
       - uses: actions/cache@v3
